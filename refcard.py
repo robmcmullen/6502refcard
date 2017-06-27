@@ -161,34 +161,56 @@ def gen_csv(cpu_name, allow_undocumented=False):
     #         if mode_name in modes:
     #             print("  ",mnemonic,operands[mode_name],modes[mode_name])
 
-    create_csv(d, lookup)
+    create_csv(d, lookup, lookup['order'])
+    create_relative_csv(d, lookup)
 
-def create_csv(d, lookup):
+def create_relative_csv(d, lookup):
+    header = "Opcode,Hex,,N,T,P"
+    lines = [header]
+    for mnemonic in sorted(d.keys()):
+        mode_info = d[mnemonic]
+        if 'relative' in mode_info:
+            opcode, _ = mode_info['relative'].split(",",1)
+            lines.append("%s,%s,,2,3,4" % (mnemonic, opcode))
+    print("\n".join(lines))
+
+def create_csv(d, lookup, order):
     main_csv = []
+    implicit_csv = []
     header = "Opcode,%s," % lookup['status_byte_header']
+    implicit_csv.append(header + "Hex,C,B")
     for mode_name in lookup['order']:
         header += "\"%s\",,," % (title_modes[mode_name])
     main_csv.append(header)
     for mnemonic in sorted(d.keys()):
-        modes = d[mnemonic]
+        mode_info = d[mnemonic]
         first_line = "%s,%s," % (mnemonic, lookup['status_byte'].get(mnemonic, lookup['status_byte_empty']))
+        implicit_line = "%s" % first_line  # force copy
         second_line = ",%s," % lookup['status_byte_empty']
-        found_mode = False
-        for mode_name in lookup['order']:
+        found_mode = 0
+        found_implicit = False
+        for mode_name in order:
             header += "%s,,," % (title_modes[mode_name])
-            if mode_name in modes:
+            if mode_name in mode_info:
                 first_line += "\"%s %s\",,," % (mnemonic, operands[mode_name])
-                second_line += modes[mode_name]
-                found_mode = True
+                second_line += mode_info[mode_name]
+                implicit_line += mode_info[mode_name]
+                found_mode += 1
+                if mode_name == "implicit":
+                    found_implicit = True
             else:
                 first_line += ",,,"
                 second_line += ",,,"
 
         if found_mode:
-            main_csv.append(first_line)
-            main_csv.append(second_line)
+            if found_implicit and found_mode == 1:
+                implicit_csv.append(implicit_line)
+            else:
+                main_csv.append(first_line)
+                main_csv.append(second_line)
 
     print ("\n".join(main_csv))
+    print ("\n".join(implicit_csv))
 
 
 
