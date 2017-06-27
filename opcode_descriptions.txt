@@ -1,0 +1,56 @@
+  ADC - Add Memory to A with Carry
+  AND - Bitwise-and A with Memory
+  ASL - Arithmetic Shift Left
+  BCC - Branch iff Carry flag (P.C) is CLEAR
+  BCS - Branch iff Carry flag (P.C) is SET
+  BEQ - Branch iff Carry flag (P.Z) is SET
+  BIT - Test bits in A with M
+  BMI - Branch iff sigN flag (P.N) is SET
+  BNE - Branch iff Carry flag (P.Z) is CLEAR
+  BPL - Branch iff sigN flag (P.N) is CLEAR
+  BRK - Simulate IRQ
+  BVC - Branch iff oVerflow flag (P.V) is CLEAR
+  BVS - Branch iff oVerflow flag (P.V) is SET
+  CLC - Clear Carry flag (P.C)
+  CLD - Clear Decimal flag (P.D)
+  CLI - Clear Interrupt flag (P.I)
+  CLV - Clear oVerflow flag (P.V)
+  CMP - Compare A with Memory
+  CPX - Compare X with Memory
+  CPY - Compare Y with Memory
+  DEC - Decrement Memory by one
+  DEX - Decrement X by one
+  DEY - Decrement Y by one
+  EOR - Bitwise-exclusive-or A with Memory
+  INC - Increment Memory by one
+  INX - Increment X by one
+  INY - Increment Y by one
+  JMP - GOTO Address
+  JSR - Jump to SubRoutine
+  LDA - Load A with Memory
+  LDX - Load X with Memory
+  LDY - Load Y with Memory
+  LSR - Logical Shift Right
+  NOP - No OPeration
+  ORA - Bitwise-or A with Memory
+  PHA - PusH A onto stack
+  PHP - PusH P onto stack
+  PLA - PulL A from stack
+  PLP - PulL P from stack
+  ROL - ROtate Left
+  ROR - ROtate Right
+  RTI - ReTurn from Interrupt
+  RTS - ReTurn from Subroutine
+  SBC - Subtract Memory from A with Borrow
+  SEC - Set Carry flag (P.C)
+  SED - Set Decimal flag (P.D)
+  SEI - Set Interrupt flag (P.I)
+  STA - Store A in Memory
+  STX - Store X in Memory
+  STY - Store Y in Memory
+  TAX - Transfer A to X
+  TAY - Transfer A to Y
+  TSX - Transfer Stack Pointer to X
+  TXA - Transfer X to A
+  TXS - Transfer X to Stack Pointer
+  TYA - Transfer Y to A
