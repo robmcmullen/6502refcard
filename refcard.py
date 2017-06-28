@@ -29,10 +29,10 @@ logging.basicConfig(level=logging.WARNING)
 log = logging.getLogger(__name__)
 
 
-address_mode_order = {
+instruction_details = {
     "6502": {
-        'map': {'accumulator': 'implicit'},
         'order': [
+            'accumulator',
             'implicit',
             'immediate',
             'zeropage',
@@ -44,7 +44,24 @@ address_mode_order = {
             'indirect',
             'indirectx',
             'indirecty',
+            'relative',
             ],
+        'operands':  {
+            'accumulator': 'A',
+            'implicit': '',
+            'immediate': '#nn',
+            'zeropage': '$nn',
+            'zeropagex': '$nn,X',
+            'zeropagey': '$nn,Y',
+            'absolute': '$nnnn',
+            'absolutex': '$nnnn,X',
+            'absolutey': '$nnnn,Y',
+            'indirect': '($nnnn)',
+            'indirectx': '($nn,X)',
+            'indirecty': '($nn),Y',
+            'relative': '',
+            },
+
         # generated from py65
         'cycles': [7, 6, 0, 0, 0, 3, 5, 0, 3, 2, 2, 0, 0, 4, 6, 0, 2, 5, 0, 0, 0, 4, 6, 0, 2, 4, 0, 0, 0, 4, 7, 0, 6, 6, 0, 0, 3, 3, 5, 0, 4, 2, 2, 0, 4, 4, 6, 0, 2, 5, 0, 0, 0, 4, 6, 0, 2, 4, 0, 0, 0, 4, 7, 0, 6, 6, 0, 0, 0, 3, 5, 0, 3, 2, 2, 0, 3, 4, 6, 0, 2, 5, 0, 0, 0, 4, 6, 0, 2, 4, 0, 0, 0, 4, 7, 0, 6, 6, 0, 0, 0, 3, 5, 0, 4, 2, 2, 0, 5, 4, 6, 0, 2, 5, 0, 0, 0, 4, 6, 0, 2, 4, 0, 0, 0, 4, 7, 0, 0, 6, 0, 0, 3, 3, 3, 0, 2, 0, 2, 0, 4, 4, 4, 0, 2, 6, 0, 0, 4, 4, 4, 0, 2, 5, 2, 0, 0, 5, 0, 0, 2, 6, 2, 0, 3, 3, 3, 0, 2, 2, 2, 0, 4, 4, 4, 0, 2, 5, 0, 0, 4, 4, 4, 0, 2, 4, 2, 0, 4, 4, 4, 0, 2, 6, 0, 0, 3, 3, 5, 0, 2, 2, 2, 0, 4, 4, 3, 0, 2, 5, 0, 0, 0, 4, 6, 0, 2, 4, 0, 0, 0, 4, 7, 0, 2, 6, 0, 0, 3, 3, 5, 0, 2, 2, 2, 0, 4, 4, 6, 0, 2, 5, 0, 0, 0, 4, 6, 0, 2, 4, 0, 0, 0, 4, 7, 0],
         'extra_cycles': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0],
@@ -103,36 +120,15 @@ address_mode_order = {
     },
 }
 
-title_modes = {
-    'implicit': 'implicit',
-    'immediate': '#nn',
-    'zeropage': '$nn',
-    'zeropagex': '$nn,X',
-    'zeropagey': '$nn,Y',
-    'absolute': '$nnnn',
-    'absolutex': '$nnnn,X',
-    'absolutey': '$nnnn,Y',
-    'indirect': '($nnnn)',
-    'indirectx': '($nn,X)',
-    'indirecty': '($nn),Y',
-    'relative': '',
-}
-
-operands = dict(title_modes)
-operands.update({
-    'implicit': '',
-})
-
-
 
 def gen_csv(cpu_name, allow_undocumented=False):
     cpu = cputables.processors[cpu_name]
-    lookup = address_mode_order[cpu_name]
+    lookup = instruction_details[cpu_name]
 
     # Create the opcode lookup table keyed on opcode name, each entry
-    # containing a dict entry for each addressing mode. The entries in that
-    # dict contain the csv string including opcode value and the number of
-    # bytes.
+    # containing a dict for each addressing mode. The entries in that second
+    # level dict contain the csv string including opcode value and the number
+    # of bytes.
     #
     # d['ora'] = {
     #     'immediate': '$9,?,2',
@@ -149,84 +145,22 @@ def gen_csv(cpu_name, allow_undocumented=False):
             flag = 0
         log.debug("%x: %s %s %d bytes, %x" % (opcode, mnemonic, mode_name, num_bytes, flag))
         if allow_undocumented or not flag & flag_undoc:
-            mode_name = lookup['map'].get(mode_name, mode_name)
             d[mnemonic.upper()][mode_name] = "%02x,%d%s,%d," % (opcode, lookup['cycles'][opcode], "+" if lookup['extra_cycles'][opcode] > 0 else "", num_bytes)
         else:
             log.debug("Skipping %s %s" % (opcode, mnemonic))
 
-    # for mnemonic in sorted(d.keys()):
-    #     print(mnemonic)
-    #     modes = d[mnemonic]
-    #     for mode_name in order:
-    #         if mode_name in modes:
-    #             print("  ",mnemonic,operands[mode_name],modes[mode_name])
+    create_csv(d, lookup)
 
-    create_csv(d, lookup, lookup['order'])
-    create_relative_csv(d, lookup)
-
-def create_relative_csv(d, lookup):
-    header = "Opcode,Hex,,N,T,P"
-    lines = [header]
-    for mnemonic in sorted(d.keys()):
-        mode_info = d[mnemonic]
-        if 'relative' in mode_info:
-            opcode, _ = mode_info['relative'].split(",",1)
-            lines.append("%s,%s,,2,3,4" % (mnemonic, opcode))
-    print("\n".join(lines))
-
-def create_csv(d, lookup, order):
-    main_csv = []
-    implicit_csv = []
-    compact_csv = []
+def create_csv(d, lookup):
     list_csv = []
-    header = "Opcode,%s," % lookup['status_byte_header']
-    implicit_csv.append(header + "Hex,C,B")
-    main_header = "Opcode,%s," % lookup['status_byte_header']
-    compact_header = "Opcode,%s," % lookup['status_byte_header']
     list_header = "Inst,%s,Op,Cyc,B" % lookup['status_byte_header']
-    for mode_name in lookup['order']:
-        main_header += "\"%s\",,," % (title_modes[mode_name])
-        compact_header += "\"%s\",,," % (title_modes[mode_name])
-    main_csv.append(main_header)
-    compact_csv.append(compact_header)
+
     for mnemonic in sorted(d.keys()):
         mode_info = d[mnemonic]
-        first_line = "%s,%s," % (mnemonic, lookup['status_byte'].get(mnemonic, lookup['status_byte_empty']))
-        implicit_line = "%s" % first_line  # force copy
-        second_line = ",%s," % lookup['status_byte_empty']
-        compact_line = "%s" % first_line  # force copy
-        found_mode = 0
-        found_implicit = False
-        for mode_name in order:
-            header += "%s,,," % (title_modes[mode_name])
+        for mode_name in lookup['order']:
             if mode_name in mode_info:
-                first_line += "\"%s %s\",,," % (mnemonic, operands[mode_name])
-                second_line += mode_info[mode_name]
-                implicit_line += mode_info[mode_name]
-                compact_line += mode_info[mode_name]
-                list_csv.append("\"%s %s\",%s,%s" % (mnemonic, operands[mode_name], lookup['status_byte'].get(mnemonic, lookup['status_byte_empty']),mode_info[mode_name]))
-                found_mode += 1
-                if mode_name == "implicit":
-                    found_implicit = True
-            else:
-                first_line += ",,,"
-                second_line += ",,,"
-                compact_line += ",,,"
-        if 'relative' in mode_info:
-            mode_name = 'relative'
-            list_csv.append("\"%s %s\",%s,%s" % (mnemonic, operands[mode_name], lookup['status_byte'].get(mnemonic, lookup['status_byte_empty']),mode_info[mode_name]))
+                list_csv.append("\"%s %s\",%s,%s" % (mnemonic, lookup['operands'][mode_name], lookup['status_byte'].get(mnemonic, lookup['status_byte_empty']),mode_info[mode_name]))
 
-        if found_mode:
-            if found_implicit and found_mode == 1:
-                implicit_csv.append(implicit_line)
-            else:
-                main_csv.append(first_line)
-                main_csv.append(second_line)
-                compact_csv.append(compact_line)
-
-    print ("\n".join(main_csv))
-    print ("\n".join(compact_csv))
-    print ("\n".join(implicit_csv))
     print ("\n".join(list_csv))
 
 
