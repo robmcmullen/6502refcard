@@ -178,10 +178,12 @@ def create_csv(d, lookup, order):
     main_csv = []
     implicit_csv = []
     compact_csv = []
+    list_csv = []
     header = "Opcode,%s," % lookup['status_byte_header']
     implicit_csv.append(header + "Hex,C,B")
     main_header = "Opcode,%s," % lookup['status_byte_header']
     compact_header = "Opcode,%s," % lookup['status_byte_header']
+    list_header = "Inst,%s,Op,Cyc,B" % lookup['status_byte_header']
     for mode_name in lookup['order']:
         main_header += "\"%s\",,," % (title_modes[mode_name])
         compact_header += "\"%s\",,," % (title_modes[mode_name])
@@ -202,6 +204,7 @@ def create_csv(d, lookup, order):
                 second_line += mode_info[mode_name]
                 implicit_line += mode_info[mode_name]
                 compact_line += mode_info[mode_name]
+                list_csv.append("\"%s %s\",%s,%s" % (mnemonic, operands[mode_name], lookup['status_byte'].get(mnemonic, lookup['status_byte_empty']),mode_info[mode_name]))
                 found_mode += 1
                 if mode_name == "implicit":
                     found_implicit = True
@@ -209,6 +212,9 @@ def create_csv(d, lookup, order):
                 first_line += ",,,"
                 second_line += ",,,"
                 compact_line += ",,,"
+        if 'relative' in mode_info:
+            mode_name = 'relative'
+            list_csv.append("\"%s %s\",%s,%s" % (mnemonic, operands[mode_name], lookup['status_byte'].get(mnemonic, lookup['status_byte_empty']),mode_info[mode_name]))
 
         if found_mode:
             if found_implicit and found_mode == 1:
@@ -221,6 +227,7 @@ def create_csv(d, lookup, order):
     print ("\n".join(main_csv))
     print ("\n".join(compact_csv))
     print ("\n".join(implicit_csv))
+    print ("\n".join(list_csv))
 
 
 
