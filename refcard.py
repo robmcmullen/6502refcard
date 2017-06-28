@@ -150,7 +150,7 @@ def gen_csv(cpu_name, allow_undocumented=False):
         log.debug("%x: %s %s %d bytes, %x" % (opcode, mnemonic, mode_name, num_bytes, flag))
         if allow_undocumented or not flag & flag_undoc:
             mode_name = lookup['map'].get(mode_name, mode_name)
-            d[mnemonic.upper()][mode_name] = "$%x,%d%s,%d," % (opcode, lookup['cycles'][opcode], "+" if lookup['extra_cycles'][opcode] > 0 else "", num_bytes)
+            d[mnemonic.upper()][mode_name] = "%02x,%d%s,%d," % (opcode, lookup['cycles'][opcode], "+" if lookup['extra_cycles'][opcode] > 0 else "", num_bytes)
         else:
             log.debug("Skipping %s %s" % (opcode, mnemonic))
 
@@ -177,16 +177,22 @@ def create_relative_csv(d, lookup):
 def create_csv(d, lookup, order):
     main_csv = []
     implicit_csv = []
+    compact_csv = []
     header = "Opcode,%s," % lookup['status_byte_header']
     implicit_csv.append(header + "Hex,C,B")
+    main_header = "Opcode,%s," % lookup['status_byte_header']
+    compact_header = "Opcode,%s," % lookup['status_byte_header']
     for mode_name in lookup['order']:
-        header += "\"%s\",,," % (title_modes[mode_name])
-    main_csv.append(header)
+        main_header += "\"%s\",,," % (title_modes[mode_name])
+        compact_header += "\"%s\",,," % (title_modes[mode_name])
+    main_csv.append(main_header)
+    compact_csv.append(compact_header)
     for mnemonic in sorted(d.keys()):
         mode_info = d[mnemonic]
         first_line = "%s,%s," % (mnemonic, lookup['status_byte'].get(mnemonic, lookup['status_byte_empty']))
         implicit_line = "%s" % first_line  # force copy
         second_line = ",%s," % lookup['status_byte_empty']
+        compact_line = "%s" % first_line  # force copy
         found_mode = 0
         found_implicit = False
         for mode_name in order:
@@ -195,12 +201,14 @@ def create_csv(d, lookup, order):
                 first_line += "\"%s %s\",,," % (mnemonic, operands[mode_name])
                 second_line += mode_info[mode_name]
                 implicit_line += mode_info[mode_name]
+                compact_line += mode_info[mode_name]
                 found_mode += 1
                 if mode_name == "implicit":
                     found_implicit = True
             else:
                 first_line += ",,,"
                 second_line += ",,,"
+                compact_line += ",,,"
 
         if found_mode:
             if found_implicit and found_mode == 1:
@@ -208,8 +216,10 @@ def create_csv(d, lookup, order):
             else:
                 main_csv.append(first_line)
                 main_csv.append(second_line)
+                compact_csv.append(compact_line)
 
     print ("\n".join(main_csv))
+    print ("\n".join(compact_csv))
     print ("\n".join(implicit_csv))
 
 
